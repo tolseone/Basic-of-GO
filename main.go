@@ -10,10 +10,15 @@ import (
 
 func main() {
 
-	url := "google.com"
-	// var url string
-	// fmt.Print("Enter the URL: ")
-	// fmt.Scan(&url)
+	http.HandleFunc("/", handler)
+	http.ListenAndServe(":8080", nil)
+}
+
+func handler(w http.ResponseWriter, req *http.Request) {
+
+	fmt.Println(req)
+
+	url := req.RequestURI[1:]
 
 	if !(strings.HasPrefix(url, "https://") || strings.HasPrefix(url, "http://")) {
 		url = "https://" + url
@@ -32,11 +37,8 @@ func main() {
 	}
 
 	fmt.Println("HTML content written to output.txt")
+	fmt.Fprintf(w, string(htmlContent))
 
-	http.HandleFunc("/docker", func(w http.ResponseWriter, req *http.Request) {
-		fmt.Fprintf(w, string(htmlContent))
-	})
-	http.ListenAndServe(":8080", nil)
 }
 
 func fetchHTML(url string) ([]byte, error) {
@@ -57,5 +59,5 @@ func fetchHTML(url string) ([]byte, error) {
 }
 
 func writeToFile(filename string, content []byte) error {
-	return os.WriteFile(filename, content, 0644)
+	return os.WriteFile("shared-data/"+filename, content, 0644)
 }
