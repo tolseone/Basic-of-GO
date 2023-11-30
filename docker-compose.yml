@@ -1,0 +1,9 @@
+version: '3'
+services:
+  my-go-project:
+    build:
+      context: .
+    volumes:
+      - ./shared-data:/go/src/app/shared-data
+    ports:
+      - 80:8080
